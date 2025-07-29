@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hms.appointment.dto.AppointmentDTO;
+import com.hms.appointment.dto.Status;
 import com.hms.appointment.exception.HmsException;
 import com.hms.appointment.service.AppointmentService;
 
@@ -29,18 +30,19 @@ public class AppointmentAPI {
 
     @PostMapping("/schedule")
     public ResponseEntity<Long> scheduleAppointment(@RequestBody AppointmentDTO appointmentDTO) throws HmsException {
+        appointmentDTO.setStatus(Status.COMPLETED);
         return new ResponseEntity<>(appointmentService.scheduleAppointment(appointmentDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/cancel/{appointmentId}")
     public ResponseEntity<String> cancelAppointment(@PathVariable Long appointmentId) throws HmsException {
         appointmentService.cancelAppointment(appointmentId);
-        return new ResponseEntity<>("Appointment Cancelled.", HttpStatus.CREATED);
+        return new ResponseEntity<>("Appointment Cancelled.", HttpStatus.OK);
     }
 
     @GetMapping("/get/{appointmentId}")
-    public ResponseEntity<AppointmentDTO> getAppointment(@PathVariable Long appointmentId) throws HmsException {
-        return new ResponseEntity<>(appointmentService.getAppointmentDetails(appointmentId), HttpStatus.CREATED);
+    public ResponseEntity<AppointmentDTO> getAppointmentDetails(@PathVariable Long appointmentId) throws HmsException {
+        return new ResponseEntity<>(appointmentService.getAppointmentDetails(appointmentId), HttpStatus.OK);
     }
 
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hms.appointment.dto.AppointmentDTO;
+import com.hms.appointment.dto.AppointmentDetails;
 import com.hms.appointment.dto.Status;
 import com.hms.appointment.exception.HmsException;
 import com.hms.appointment.service.AppointmentService;
@@ -43,6 +44,11 @@ public class AppointmentAPI {
     @GetMapping("/get/{appointmentId}")
     public ResponseEntity<AppointmentDTO> getAppointmentDetails(@PathVariable Long appointmentId) throws HmsException {
         return new ResponseEntity<>(appointmentService.getAppointmentDetails(appointmentId), HttpStatus.OK);
+    }
+
+    @GetMapping("/get/details/{appointmentId}")
+    public ResponseEntity<AppointmentDetails> getAppointmentDetailsWithName(@PathVariable Long appointmentId) throws HmsException {
+        return new ResponseEntity<>(appointmentService.getAppointmentDetailsWithName(appointmentId), HttpStatus.OK);
     }
 
 }

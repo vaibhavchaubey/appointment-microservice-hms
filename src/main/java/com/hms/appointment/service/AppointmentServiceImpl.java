@@ -3,6 +3,7 @@ package com.hms.appointment.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hms.appointment.clients.ProfileClient;
 import com.hms.appointment.dto.AppointmentDTO;
 import com.hms.appointment.dto.AppointmentDetails;
 import com.hms.appointment.dto.DoctorDTO;
@@ -18,16 +19,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     private AppointmentRepository appointmentRepository;
 
     @Autowired
-    private ApiService apiService;
+    private ProfileClient profileClient;
 
     @Override
     public Long scheduleAppointment(AppointmentDTO appointmentDTO) throws HmsException {
-        Boolean doctorExists = apiService.doctorExists(appointmentDTO.getDoctorId()).block();
+        Boolean doctorExists = profileClient.doctorExists(appointmentDTO.getDoctorId());
         if (doctorExists == null || !doctorExists) {
             throw new HmsException("DOCTOR_NOT_FOUND");
         }
 
-        Boolean patientExists = apiService.patientExists(appointmentDTO.getPatientId()).block();
+        Boolean patientExists = profileClient.patientExists(appointmentDTO.getPatientId());
         if (patientExists == null || !patientExists) {
             throw new HmsException("PATIENT_NOT_FOUND");
         }
@@ -70,13 +71,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         AppointmentDTO appointmentDTO = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new HmsException("APPOINTMENT_NOT_FOUND")).toDTO();
 
-        DoctorDTO doctorDTO = apiService.getDoctorById(appointmentDTO.getDoctorId()).block();
+        DoctorDTO doctorDTO = profileClient.getDoctorById(appointmentDTO.getDoctorId());
 
         if (doctorDTO == null) {
             throw new HmsException("DOCTOR_NOT_FOUND");
         }
 
-        PatientDTO patientDTO = apiService.getPatientById(appointmentDTO.getPatientId()).block();
+        PatientDTO patientDTO = profileClient.getPatientById(appointmentDTO.getPatientId());
 
         if (patientDTO == null) {
             throw new HmsException("PATIENT_NOT_FOUND");

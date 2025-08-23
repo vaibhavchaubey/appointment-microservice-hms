@@ -1,5 +1,7 @@
 package com.hms.appointment.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -98,6 +100,15 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentDTO.getReason(),
                 appointmentDTO.getNotes());
 
+    }
+
+    @Override
+    public List<AppointmentDetails> getAllAppointmentsByPatientId(Long patientId) throws HmsException {
+        return appointmentRepository.findAllByPatientId(patientId).stream().map(appointment -> {
+            DoctorDTO doctorDTO = profileClient.getDoctorById(appointment.getDoctorId());
+            appointment.setDoctorName(doctorDTO != null ? doctorDTO.getName() : null);
+            return appointment;
+        }).toList();
     }
 
 }

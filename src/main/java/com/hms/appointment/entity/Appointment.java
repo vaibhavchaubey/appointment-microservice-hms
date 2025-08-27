@@ -39,4 +39,8 @@ public class Appointment {
                 this.notes);
     }
 
+    public Appointment(Long id) {
+        this.id = id;
+    }
+
 }

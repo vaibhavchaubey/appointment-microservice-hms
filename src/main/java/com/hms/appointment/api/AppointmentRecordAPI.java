@@ -1,18 +1,24 @@
 package com.hms.appointment.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hms.appointment.dto.AppointmentRecordDTO;
+import com.hms.appointment.exception.HmsException;
 import com.hms.appointment.service.AppointmentRecordService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
 
 @RestController
-@RequestMapping("/appointment")
+@RequestMapping("/appointment-report")
 @Validated
 @CrossOrigin
 public class AppointmentRecordAPI {
@@ -20,8 +26,32 @@ public class AppointmentRecordAPI {
     @Autowired
     private AppointmentRecordService appointmentRecordService;
 
+    @PostMapping("/create")
+    public ResponseEntity<Long> createAppointmentReport(@RequestBody AppointmentRecordDTO appointmentRecordDTO)
+            throws HmsException {
+        return new ResponseEntity<>(appointmentRecordService.createAppointmentRecord(appointmentRecordDTO),
+                HttpStatus.CREATED);
+    }
 
-    
-    
+    @PutMapping("/update")
+    public ResponseEntity<String> updateAppointmentReport(@RequestBody AppointmentRecordDTO appointmentRecordDTO)
+            throws HmsException {
+        appointmentRecordService.updateAppointmentRecord(appointmentRecordDTO);
+        return new ResponseEntity<>("Appointment Report Updated.", HttpStatus.OK);
+    }
+
+    @GetMapping("/getByAppointmentId/{appointmentId}")
+    public ResponseEntity<AppointmentRecordDTO> getAppointmentReportByAppointmentId(@PathVariable Long appointmentId)
+            throws HmsException {
+        return new ResponseEntity<>(appointmentRecordService.getAppointmentRecordByAppointmentId(appointmentId),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/getById/{recordId}")
+    public ResponseEntity<AppointmentRecordDTO> getAppointmentRecordById(@PathVariable Long recordId)
+            throws HmsException {
+        return new ResponseEntity<>(appointmentRecordService.getAppointmentRecordById(recordId),
+                HttpStatus.OK);
+    }
 
 }

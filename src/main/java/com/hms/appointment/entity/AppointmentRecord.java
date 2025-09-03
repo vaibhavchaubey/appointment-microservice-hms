@@ -49,6 +49,7 @@ public class AppointmentRecord {
                 StringListConverter.convertStringToList(this.tests),
                 this.notes,
                 this.referral,
+                null,
                 this.followUpDate,
                 this.createdAt);
     }

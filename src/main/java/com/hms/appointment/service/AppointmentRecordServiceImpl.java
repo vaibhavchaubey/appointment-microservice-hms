@@ -10,13 +10,16 @@ import com.hms.appointment.exception.HmsException;
 import com.hms.appointment.repository.AppointmentRecordRepository;
 import com.hms.appointment.utility.StringListConverter;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AppointmentRecordServiceImpl implements AppointmentRecordService {
 
     private final AppointmentRecordRepository appointmentRecordRepository;
+    private final PrescriptionService prescriptionService;
 
     @Override
     public Long createAppointmentRecord(AppointmentRecordDTO appointmentRecordDTO) throws HmsException {
@@ -27,8 +30,14 @@ public class AppointmentRecordServiceImpl implements AppointmentRecordService {
             throw new HmsException("APPOINTMENT_RECORD_ALREADY_EXISTS");
         }
 
-        return appointmentRecordRepository.save(appointmentRecordDTO.toEntity()).getId();
+        Long id = appointmentRecordRepository.save(appointmentRecordDTO.toEntity()).getId();
 
+        if (appointmentRecordDTO.getPrescription() != null) {
+            appointmentRecordDTO.getPrescription().setAppointmentId(appointmentRecordDTO.getAppointmentId());
+            prescriptionService.savePrescription(appointmentRecordDTO.getPrescription());
+        }
+
+        return id;
     }
 
     @Override
@@ -54,6 +63,18 @@ public class AppointmentRecordServiceImpl implements AppointmentRecordService {
                 .orElseThrow(() -> new HmsException("APPOINTMENT_RECORD_NOT_FOUND"))
                 .toDTO();
 
+    }
+
+    @Override
+    public AppointmentRecordDTO getAppointmentRecordDetailsByAppointmentId(Long appointmentId) throws HmsException {
+        AppointmentRecordDTO record = appointmentRecordRepository
+                .findByAppointment_Id(appointmentId)
+                .orElseThrow(() -> new HmsException("APPOINTMENT_RECORD_NOT_FOUND"))
+                .toDTO();
+
+        record.setPrescription(prescriptionService.getPrescriptionByAppointmentId(appointmentId));
+
+        return record;
     }
 
     @Override

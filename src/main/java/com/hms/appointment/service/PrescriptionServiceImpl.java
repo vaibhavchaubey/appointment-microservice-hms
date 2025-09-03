@@ -32,8 +32,8 @@ public class PrescriptionServiceImpl implements PrescriptionService {
                 .orElseThrow(() -> new HmsException("PRESCRIPTION_NOT_FOUND")).toDTO();
 
         prescriptionDTO.setMedicines(medicineService.getAllMedicinesByPrescriptionId(prescriptionDTO.getId()));
+        
         return prescriptionDTO;
-
     }
 
     @Override

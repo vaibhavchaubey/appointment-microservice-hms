@@ -18,7 +18,7 @@ import com.hms.appointment.exception.HmsException;
 import com.hms.appointment.service.AppointmentRecordService;
 
 @RestController
-@RequestMapping("/appointment-report")
+@RequestMapping("/appointment/report")
 @Validated
 @CrossOrigin
 public class AppointmentRecordAPI {
@@ -44,6 +44,14 @@ public class AppointmentRecordAPI {
     public ResponseEntity<AppointmentRecordDTO> getAppointmentReportByAppointmentId(@PathVariable Long appointmentId)
             throws HmsException {
         return new ResponseEntity<>(appointmentRecordService.getAppointmentRecordByAppointmentId(appointmentId),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/getDetailsByAppointmentId/{appointmentId}")
+    public ResponseEntity<AppointmentRecordDTO> getAppointmentRecordDetailsByAppointmentId(
+            @PathVariable Long appointmentId)
+            throws HmsException {
+        return new ResponseEntity<>(appointmentRecordService.getAppointmentRecordDetailsByAppointmentId(appointmentId),
                 HttpStatus.OK);
     }
 

@@ -9,10 +9,12 @@ import com.hms.appointment.entity.Medicine;
 import com.hms.appointment.exception.HmsException;
 import com.hms.appointment.repository.MedicineRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MedicineServiceImpl implements MedicineService {
 
     private final MedicineRepository medicineRepository;

@@ -1,5 +1,6 @@
 package com.hms.appointment.service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class AppointmentRecordServiceImpl implements AppointmentRecordService {
         if (existingRecord.isPresent()) {
             throw new HmsException("APPOINTMENT_RECORD_ALREADY_EXISTS");
         }
-
+        appointmentRecordDTO.setCreatedAt(LocalDateTime.now());
         Long id = appointmentRecordRepository.save(appointmentRecordDTO.toEntity()).getId();
 
         if (appointmentRecordDTO.getPrescription() != null) {

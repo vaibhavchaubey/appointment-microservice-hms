@@ -1,10 +1,18 @@
 package com.hms.appointment.service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.hms.appointment.clients.ProfileClient;
+import com.hms.appointment.dto.DoctorName;
 import com.hms.appointment.dto.PrescriptionDTO;
+import com.hms.appointment.dto.PrescriptionDetails;
+import com.hms.appointment.dto.RecordDetails;
+import com.hms.appointment.entity.Prescription;
 import com.hms.appointment.exception.HmsException;
 import com.hms.appointment.repository.PrescriptionRepository;
 
@@ -18,6 +26,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
     private final PrescriptionRepository prescriptionRepository;
     private final MedicineService medicineService;
+    private final ProfileClient profileClient;
 
     @Override
     public Long savePrescription(PrescriptionDTO prescriptionDTO) throws HmsException {
@@ -35,7 +44,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
                 .orElseThrow(() -> new HmsException("PRESCRIPTION_NOT_FOUND")).toDTO();
 
         prescriptionDTO.setMedicines(medicineService.getAllMedicinesByPrescriptionId(prescriptionDTO.getId()));
-        
+
         return prescriptionDTO;
     }
 
@@ -46,6 +55,45 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
         prescriptionDTO.setMedicines(medicineService.getAllMedicinesByPrescriptionId(prescriptionDTO.getId()));
         return prescriptionDTO;
+    }
+
+    @Override
+    public List<PrescriptionDetails> getPrescriptionsByPatientId(Long patientId) throws HmsException {
+        List<Prescription> prescriptions = prescriptionRepository.findAllByPatientId(patientId);
+
+        if (prescriptions.isEmpty()) {
+            throw new HmsException("NO_PRESCRIPTIONS_FOUND_FOR_PATIENT");
+        }
+
+        List<PrescriptionDetails> prescriptionDetails = prescriptions.stream()
+                .map(Prescription::toDetails)
+                .toList();
+
+        for (PrescriptionDetails prescription : prescriptionDetails) {
+            prescription.setMedicines(medicineService.getAllMedicinesByPrescriptionId(prescription.getId()));
+        }
+
+        List<Long> doctorIds = prescriptionDetails.stream()
+                .map(PrescriptionDetails::getDoctorId)
+                .distinct()
+                .toList();
+
+        List<DoctorName> doctors = profileClient.getDoctorsById(doctorIds);
+
+        Map<Long, String> doctorMap = doctors.stream()
+                .collect(Collectors.toMap(DoctorName::getId, DoctorName::getName));
+
+        prescriptionDetails.forEach(prescription -> {
+            String doctorName = doctorMap.get(prescription.getDoctorId());
+            if (doctorName != null) {
+                prescription.setDoctorName(doctorName);
+            } else {
+                prescription.setDoctorName("Unknown Doctor");
+            }
+        });
+
+        return prescriptionDetails;
+
     }
 
 }

@@ -84,11 +84,10 @@ public class AppointmentRecordAPI {
                 return new ResponseEntity<>(appointmentRecordService.isRecordExists(appointmentId), HttpStatus.OK);
         }
 
-        @GetMapping("/getPrescriptionByPatientId/{patientId}")
+        @GetMapping("/getPrescriptionsByPatientId/{patientId}")
         public ResponseEntity<List<PrescriptionDetails>> getPrescriptionsByPatientId(@PathVariable Long patientId)
                         throws HmsException {
                 return new ResponseEntity<>(prescriptionService.getPrescriptionsByPatientId(patientId),
                                 HttpStatus.OK);
         }
-
 }

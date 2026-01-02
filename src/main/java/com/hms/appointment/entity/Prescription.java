@@ -51,6 +51,7 @@ public class Prescription {
         return new PrescriptionDetails(
                 this.id,
                 this.patientId,
+                null,
                 this.doctorId,
                 null,
                 this.appointment != null ? this.appointment.getId() : null,

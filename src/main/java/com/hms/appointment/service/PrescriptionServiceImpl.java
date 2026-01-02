@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.hms.appointment.clients.ProfileClient;
 import com.hms.appointment.dto.DoctorName;
+import com.hms.appointment.dto.PatientName;
 import com.hms.appointment.dto.PrescriptionDTO;
 import com.hms.appointment.dto.PrescriptionDetails;
-import com.hms.appointment.dto.RecordDetails;
 import com.hms.appointment.entity.Prescription;
 import com.hms.appointment.exception.HmsException;
 import com.hms.appointment.repository.PrescriptionRepository;
@@ -94,6 +94,56 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
         return prescriptionDetails;
 
+    }
+
+    @Override
+    public List<PrescriptionDetails> getAllPrescriptions() throws HmsException {
+        List<Prescription> prescriptions = (List<Prescription>) prescriptionRepository.findAll();
+
+        if (prescriptions.isEmpty()) {
+            throw new HmsException("NO_PRESCRIPTIONS_FOUND_FOR_PATIENT");
+        }
+
+        List<PrescriptionDetails> prescriptionDetails = prescriptions.stream()
+                .map(Prescription::toDetails)
+                .toList();
+
+        List<Long> doctorIds = prescriptionDetails.stream()
+                .map(PrescriptionDetails::getDoctorId)
+                .distinct()
+                .toList();
+
+        List<Long> patientIds = prescriptionDetails.stream()
+                .map(PrescriptionDetails::getPatientId)
+                .distinct()
+                .toList();
+
+        List<DoctorName> doctors = profileClient.getDoctorsById(doctorIds);
+
+        List<PatientName> patients = profileClient.getPatientsById(patientIds);
+
+        Map<Long, String> doctorMap = doctors.stream()
+                .collect(Collectors.toMap(DoctorName::getId, DoctorName::getName));
+
+        Map<Long, String> patientMap = patients.stream()
+                .collect(Collectors.toMap(PatientName::getId, PatientName::getName));
+
+        prescriptionDetails.forEach(prescription -> {
+            String doctorName = doctorMap.get(prescription.getDoctorId());
+            if (doctorName != null) {
+                prescription.setDoctorName(doctorName);
+            } else {
+                prescription.setDoctorName("Unknown Doctor");
+            }
+            String patientName = patientMap.get(prescription.getPatientId());
+            if (patientName != null) {
+                prescription.setPatientName(patientName);
+            } else {
+                prescription.setPatientName("Unknown Patient");
+            }
+        });
+
+        return prescriptionDetails;
     }
 
 }

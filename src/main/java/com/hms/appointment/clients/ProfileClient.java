@@ -4,6 +4,7 @@ import com.hms.appointment.config.FeignClientInterceptor;
 import com.hms.appointment.dto.DoctorDTO;
 import com.hms.appointment.dto.DoctorName;
 import com.hms.appointment.dto.PatientDTO;
+import com.hms.appointment.dto.PatientName;
 
 import java.util.List;
 
@@ -27,4 +28,7 @@ public interface ProfileClient {
 
     @GetMapping("/profile/doctor/getDoctorsById")
     List<DoctorName> getDoctorsById(@RequestParam List<Long> ids);
+
+    @GetMapping("/profile/patient/getPatientsById")
+    List<PatientName> getPatientsById(@RequestParam List<Long> ids);
 }

@@ -16,23 +16,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hms.appointment.dto.AppointmentRecordDTO;
+import com.hms.appointment.dto.MedicineDTO;
 import com.hms.appointment.dto.PrescriptionDetails;
 import com.hms.appointment.dto.RecordDetails;
 import com.hms.appointment.exception.HmsException;
 import com.hms.appointment.service.AppointmentRecordService;
+import com.hms.appointment.service.MedicineService;
 import com.hms.appointment.service.PrescriptionService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/appointment/report")
 @Validated
 @CrossOrigin
+@RequiredArgsConstructor
 public class AppointmentRecordAPI {
 
-        @Autowired
-        private AppointmentRecordService appointmentRecordService;
-
-        @Autowired
-        private PrescriptionService prescriptionService;
+        private final AppointmentRecordService appointmentRecordService;
+        private final PrescriptionService prescriptionService;
+        private final MedicineService medicineService;
 
         @PostMapping("/create")
         public ResponseEntity<Long> createAppointmentReport(@RequestBody AppointmentRecordDTO appointmentRecordDTO)
@@ -90,4 +93,17 @@ public class AppointmentRecordAPI {
                 return new ResponseEntity<>(prescriptionService.getPrescriptionsByPatientId(patientId),
                                 HttpStatus.OK);
         }
+
+        @GetMapping("/getAllPrescriptions")
+        public ResponseEntity<List<PrescriptionDetails>> getAllPrescriptions() throws HmsException {
+                return new ResponseEntity<>(prescriptionService.getAllPrescriptions(), HttpStatus.OK);
+        }
+
+        @GetMapping("/getMedicinesByPrescriptionId/{prescriptionId}")
+        public ResponseEntity<List<MedicineDTO>> getAllMedicinesByPrescriptionId(@PathVariable Long prescriptionId)
+                        throws HmsException {
+                return new ResponseEntity<>(medicineService.getAllMedicinesByPrescriptionId(prescriptionId),
+                                HttpStatus.OK);
+        }
+
 }

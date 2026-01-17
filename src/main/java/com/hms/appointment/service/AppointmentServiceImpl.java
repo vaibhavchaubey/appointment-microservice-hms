@@ -1,5 +1,8 @@
 package com.hms.appointment.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,6 +157,35 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<ReasonCountDTO> getReasonCounts() throws HmsException {
         return appointmentRepository.countReasons();
+    }
+
+    @Override
+    public List<AppointmentDetails> getTodaysAppointments() throws HmsException {
+        LocalDate todat = LocalDate.now();
+        LocalDateTime startOfDay = todat.atStartOfDay();
+        LocalDateTime endOfDay = todat.atTime(LocalTime.MAX);
+
+        return appointmentRepository.findByAppointmentTimeBetween(startOfDay, endOfDay).stream().map(appointment -> {
+            DoctorDTO doctorDTO = profileClient.getDoctorById(appointment.getDoctorId());
+            PatientDTO patientDTO = profileClient.getPatientById(appointment.getPatientId());
+
+            return new AppointmentDetails(
+                    appointment.getId(),
+                    appointment.getPatientId(),
+                    patientDTO.getName(),
+                    patientDTO.getEmail(),
+                    patientDTO.getPhone(),
+                    appointment.getDoctorId(),
+                    doctorDTO.getName(),
+                    doctorDTO.getEmail(),
+                    doctorDTO.getPhone(),
+                    appointment.getAppointmentTime(),
+                    appointment.getStatus(),
+                    appointment.getReason(),
+                    appointment.getNotes());
+
+        }).toList();
+
     }
 
 }

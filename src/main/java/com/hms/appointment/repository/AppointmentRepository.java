@@ -8,6 +8,8 @@ import com.hms.appointment.dto.AppointmentDetails;
 import com.hms.appointment.dto.MonthlyVisitDTO;
 import com.hms.appointment.dto.ReasonCountDTO;
 import com.hms.appointment.entity.Appointment;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -36,4 +38,6 @@ public interface AppointmentRepository extends CrudRepository<Appointment, Long>
 
     @Query("SELECT new com.hms.appointment.dto.ReasonCountDTO(a.reason, COUNT(a)) FROM Appointment a GROUP BY a.reason")
     List<ReasonCountDTO> countReasons();
+
+    List<Appointment> findByAppointmentTimeBetween(LocalDateTime startOfDay, LocalDateTime endOfDay);
 }

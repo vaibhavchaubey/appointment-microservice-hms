@@ -115,4 +115,10 @@ public class AppointmentAPI {
         return new ResponseEntity<>(prescriptionService.getMedicinesByPatientId(patientId), HttpStatus.OK);
     }
 
+    @GetMapping("/today")
+    public ResponseEntity<List<AppointmentDetails>> getTodaysAppointments()
+            throws HmsException {
+        return new ResponseEntity<>(appointmentService.getTodaysAppointments(), HttpStatus.OK);
+    }
+
 }

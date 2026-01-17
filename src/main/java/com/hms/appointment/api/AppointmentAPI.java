@@ -79,6 +79,18 @@ public class AppointmentAPI {
         return new ResponseEntity<>(appointmentService.getAppointmentCountByPatient(patientId), HttpStatus.OK);
     }
 
+    @GetMapping("/countByDoctor/{doctorId}")
+    public ResponseEntity<List<MonthlyVisitDTO>> getAppointmentCountByDoctor(@PathVariable Long doctorId)
+            throws HmsException {
+        return new ResponseEntity<>(appointmentService.getAppointmentCountByDoctor(doctorId), HttpStatus.OK);
+    }
+
+    @GetMapping("/visitCount")
+    public ResponseEntity<List<MonthlyVisitDTO>> getAppointmentCounts()
+            throws HmsException {
+        return new ResponseEntity<>(appointmentService.getAppointmentCounts(), HttpStatus.OK);
+    }
+
     @GetMapping("/countReasonsByPatient/{patientId}")
     public ResponseEntity<List<ReasonCountDTO>> getReasonCountByPatient(@PathVariable Long patientId)
             throws HmsException {

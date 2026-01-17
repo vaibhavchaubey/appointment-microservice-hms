@@ -22,6 +22,12 @@ public interface AppointmentRepository extends CrudRepository<Appointment, Long>
     @Query("SELECT new com.hms.appointment.dto.MonthlyVisitDTO(CAST(FUNCTION('MONTHNAME', a.appointmentTime) AS String), COUNT(a)) FROM Appointment a WHERE a.patientId = ?1 AND YEAR(a.appointmentTime) = YEAR(CURRENT_DATE) GROUP BY FUNCTION('MONTH', a.appointmentTime), CAST(FUNCTION('MONTHNAME', a.appointmentTime) AS String) ORDER BY FUNCTION('MONTH', a.appointmentTime)")
     List<MonthlyVisitDTO> countCurrentYearVisitsByPatient(Long patientId);
 
+    @Query("SELECT new com.hms.appointment.dto.MonthlyVisitDTO(CAST(FUNCTION('MONTHNAME', a.appointmentTime) AS String), COUNT(a)) FROM Appointment a WHERE a.doctorId = ?1 AND YEAR(a.appointmentTime) = YEAR(CURRENT_DATE) GROUP BY FUNCTION('MONTH', a.appointmentTime), CAST(FUNCTION('MONTHNAME', a.appointmentTime) AS String) ORDER BY FUNCTION('MONTH', a.appointmentTime)")
+    List<MonthlyVisitDTO> countCurrentYearVisitsByDoctor(Long doctorId);
+
+    @Query("SELECT new com.hms.appointment.dto.MonthlyVisitDTO(CAST(FUNCTION('MONTHNAME', a.appointmentTime) AS String), COUNT(a)) FROM Appointment a WHERE YEAR(a.appointmentTime) = YEAR(CURRENT_DATE) GROUP BY FUNCTION('MONTH', a.appointmentTime), CAST(FUNCTION('MONTHNAME', a.appointmentTime) AS String) ORDER BY FUNCTION('MONTH', a.appointmentTime)")
+    List<MonthlyVisitDTO> countCurrentYearVisits();
+
     @Query("SELECT new com.hms.appointment.dto.ReasonCountDTO(a.reason, COUNT(a)) FROM Appointment a WHERE a.patientId = ?1 GROUP BY a.reason")
     List<ReasonCountDTO> countReasonsByPatientId(Long patientId);
 }

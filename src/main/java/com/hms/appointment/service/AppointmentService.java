@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.hms.appointment.dto.AppointmentDTO;
 import com.hms.appointment.dto.AppointmentDetails;
+import com.hms.appointment.dto.MonthlyVisitDTO;
+import com.hms.appointment.dto.ReasonCountDTO;
 import com.hms.appointment.exception.HmsException;
 
 public interface AppointmentService {
@@ -24,4 +26,7 @@ public interface AppointmentService {
 
     List<AppointmentDetails> getAllAppointmentsByDoctorId(Long doctorId) throws HmsException;
 
+    List<MonthlyVisitDTO> getAppointmentCountByPatient(Long patientId) throws HmsException;
+
+    List<ReasonCountDTO> getReasonCountByPatient(Long patientId) throws HmsException;
 }

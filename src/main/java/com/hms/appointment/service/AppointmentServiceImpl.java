@@ -9,7 +9,9 @@ import com.hms.appointment.clients.ProfileClient;
 import com.hms.appointment.dto.AppointmentDTO;
 import com.hms.appointment.dto.AppointmentDetails;
 import com.hms.appointment.dto.DoctorDTO;
+import com.hms.appointment.dto.MonthlyVisitDTO;
 import com.hms.appointment.dto.PatientDTO;
+import com.hms.appointment.dto.ReasonCountDTO;
 import com.hms.appointment.dto.Status;
 import com.hms.appointment.entity.Appointment;
 import com.hms.appointment.exception.HmsException;
@@ -122,6 +124,16 @@ public class AppointmentServiceImpl implements AppointmentService {
             }
             return appointment;
         }).toList();
+    }
+
+    @Override
+    public List<MonthlyVisitDTO> getAppointmentCountByPatient(Long patientId) throws HmsException {
+        return appointmentRepository.countCurrentYearVisitsByPatient(patientId);
+    }
+
+    @Override
+    public List<ReasonCountDTO> getReasonCountByPatient(Long patientId) throws HmsException {
+        return appointmentRepository.countReasonsByPatientId(patientId);
     }
 
 }

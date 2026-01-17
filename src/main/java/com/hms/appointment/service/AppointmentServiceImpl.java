@@ -132,11 +132,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<ReasonCountDTO> getReasonCountByPatient(Long patientId) throws HmsException {
-        return appointmentRepository.countReasonsByPatientId(patientId);
-    }
-
-    @Override
     public List<MonthlyVisitDTO> getAppointmentCountByDoctor(Long doctorId) throws HmsException {
         return appointmentRepository.countCurrentYearVisitsByDoctor(doctorId);
     }
@@ -144,6 +139,21 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<MonthlyVisitDTO> getAppointmentCounts() throws HmsException {
         return appointmentRepository.countCurrentYearVisits();
+    }
+
+    @Override
+    public List<ReasonCountDTO> getReasonCountByPatient(Long patientId) throws HmsException {
+        return appointmentRepository.countReasonsByPatientId(patientId);
+    }
+
+    @Override
+    public List<ReasonCountDTO> getReasonCountByDoctor(Long doctorId) throws HmsException {
+        return appointmentRepository.countReasonsByDoctorId(doctorId);
+    }
+
+    @Override
+    public List<ReasonCountDTO> getReasonCounts() throws HmsException {
+        return appointmentRepository.countReasons();
     }
 
 }

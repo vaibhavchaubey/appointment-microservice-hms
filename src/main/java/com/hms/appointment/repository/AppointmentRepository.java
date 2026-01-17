@@ -30,4 +30,10 @@ public interface AppointmentRepository extends CrudRepository<Appointment, Long>
 
     @Query("SELECT new com.hms.appointment.dto.ReasonCountDTO(a.reason, COUNT(a)) FROM Appointment a WHERE a.patientId = ?1 GROUP BY a.reason")
     List<ReasonCountDTO> countReasonsByPatientId(Long patientId);
+
+    @Query("SELECT new com.hms.appointment.dto.ReasonCountDTO(a.reason, COUNT(a)) FROM Appointment a WHERE a.doctorId = ?1 GROUP BY a.reason")
+    List<ReasonCountDTO> countReasonsByDoctorId(Long doctorId);
+
+    @Query("SELECT new com.hms.appointment.dto.ReasonCountDTO(a.reason, COUNT(a)) FROM Appointment a GROUP BY a.reason")
+    List<ReasonCountDTO> countReasons();
 }

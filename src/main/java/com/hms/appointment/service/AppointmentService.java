@@ -33,4 +33,8 @@ public interface AppointmentService {
     List<MonthlyVisitDTO> getAppointmentCounts() throws HmsException;
 
     List<ReasonCountDTO> getReasonCountByPatient(Long patientId) throws HmsException;
+
+    List<ReasonCountDTO> getReasonCountByDoctor(Long doctorId) throws HmsException;
+
+    List<ReasonCountDTO> getReasonCounts() throws HmsException;
 }

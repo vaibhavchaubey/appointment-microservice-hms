@@ -11,7 +11,7 @@ import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "profile-microservice-hms", configuration = FeignClientInterceptor.class)
+@FeignClient(name = "profile-microservice-hms", url = "${profile-microservice-hms.url}", configuration = FeignClientInterceptor.class)
 public interface ProfileClient {
 
     @GetMapping("/profile/doctor/exists/{id}")
